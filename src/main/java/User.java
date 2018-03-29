@@ -1,10 +1,11 @@
-import java.util.UUID;
+import java.util.ArrayList;
 
-public class User {
+public class User 
+{
 	
-	private UUID id;
 	private String email;
 	private String fullName;
+	private ArrayList<String> following;
 	
 	// Gson wants a default constructor
 	public User() 
@@ -12,23 +13,14 @@ public class User {
 
 	}
 	
-	public User(UUID id, String email, String fullName) {
-		this.id = id;
+	public User(String email, String fullName) {
 		this.email = email;
 		this.fullName = fullName;
 	}
 	
 	@Override
 	public String toString() {
-		return id.toString()+": "+email+" "+fullName;
-	}
-	
-	public UUID getId() {
-		return id;
-	}
-
-	public void setId(UUID id) {
-		this.id = id;
+		return email+" "+fullName;
 	}
 
 	public String getEmail() {
@@ -45,6 +37,19 @@ public class User {
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+
+	public ArrayList<String> getFollowing() {
+		return following;
+	}
+
+	public void setFollowing(ArrayList<String> following) {
+		this.following = following;
+	}
+	
+	public void addFollowing(String f)
+	{
+		getFollowing().add(f);
 	}
 
 }

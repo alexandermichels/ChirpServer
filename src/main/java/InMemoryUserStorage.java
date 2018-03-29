@@ -17,11 +17,6 @@ public class InMemoryUserStorage implements UserStorage {
 	}
 
 	@Override
-	public User findUserById(String id) throws StorageException {
-		return users.get(id);
-	}
-
-	@Override
 	public List<User> findUserByName(String name) throws StorageException {
 		List<User> result = new ArrayList<>();
 		for(User u: users.values()) if (u.getFullName().equals(name)) result.add(u);
@@ -29,19 +24,17 @@ public class InMemoryUserStorage implements UserStorage {
 	}
 
 	@Override
-	public List<User> findUserByEmail(String email) throws StorageException {
-		List<User> result = new ArrayList<>();
-		for(User u: users.values()) if (u.getEmail().equals(email)) result.add(u);
-		return result;
+	public User findUserByEmail(String email) throws StorageException {
+		return users.get(email);
 	}
 
 	@Override
 	public void addUser(User u) throws StorageException {
-		 users.put(u.getId().toString(), u);
+		 users.put(u.getEmail(), u);
 	}
 
 	@Override
-	public void updateUser(String string, String email, String name) throws StorageException {
+	public void updateUser(String email, String name) throws StorageException {
 		// TODO Auto-generated method stub
 
 	}

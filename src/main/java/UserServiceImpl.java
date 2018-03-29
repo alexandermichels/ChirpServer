@@ -1,11 +1,11 @@
 import java.util.List;
-import java.util.UUID;
 
 public class UserServiceImpl implements UserService {
 	
 	private UserStorage storage;
 
-	public UserServiceImpl(UserStorage storage) {
+	public UserServiceImpl(UserStorage storage) 
+	{
 		this.storage = storage;
 	}
 
@@ -21,30 +21,24 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User findUserByEmail(String email) throws StorageException {
-		return storage.findUserByEmail(email).get(0);
+		return storage.findUserByEmail(email);
 	}
 
 	@Override
 	public void createUser(String email, String name) throws DuplicateEmailException, StorageException {
-		User u = new User(UUID.randomUUID(), email, name);
+		User u = new User(email, name);
 		storage.addUser(u);
 
 	}
 
 	@Override
-	public void updateUser(UUID id, String email, String name) throws DuplicateEmailException, StorageException {
-		storage.updateUser(id.toString(), email, name);
+	public void updateUser(String email, String name) throws DuplicateEmailException, StorageException {
+		storage.updateUser(email, name);
 	}
 
 	@Override
-	public void deleteUser(UUID id) throws StorageException {
-		storage.deleteUser(id.toString());
-	}
-
-	@Override
-	public List<Tweet> getUserTimeline(String email) throws UserAppException {
-		// TODO Auto-generated method stub
-		return null;
+	public void deleteUser(String email) throws StorageException {
+		storage.deleteUser(email);
 	}
 
 }

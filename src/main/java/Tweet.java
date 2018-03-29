@@ -6,9 +6,9 @@ public class Tweet
 	private Date time;
 	private String message;
 	
-	public Tweet(User u, String m)
+	public Tweet(String email, String m)
 	{
-		this.creatorEmail = u.getEmail();
+		this.creatorEmail = email;
 		this.time = new Date();
 		this.message = m;
 	}

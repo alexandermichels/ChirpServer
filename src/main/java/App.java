@@ -11,8 +11,9 @@ public class App {
     		BasicConfigurator.configure();
     		after((req,res) -> res.type("application/json"));
     		InMemoryUserStorage userStorage = new InMemoryUserStorage();
+    		InMemoryTweetStorage tweetStorage = new InMemoryTweetStorage();
     		SampleData.addUsers(userStorage);
-		new UserController(new UserServiceImpl(userStorage));
+		new Controller(new UserServiceImpl(userStorage), new TweetServiceImpl(tweetStorage));
     }
 
 }
