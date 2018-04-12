@@ -1,6 +1,5 @@
 import static spark.Spark.get;
 import static spark.Spark.put;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
@@ -11,28 +10,27 @@ import spark.Request;
 import spark.ResponseTransformer;
 
 public class Controller {
-	
-	private static final String USER_EMAIL;
 
 	// HTTP verb -> REST meaning
 	// GET -> read
 	// PUT -> create
 	// POST -> update
 	// DELETE -> delete
+	private static String USER_EMAIL;
 	
-	public Controller(final UserService uService, final TweetService tService) {
+	public Controller(final UserService uService, final ChirpService tService) {
 		get("/", (req, res) -> {
 	        ArrayList<String> following = uService.findUserByEmail(USER_EMAIL).getFollowing();
-	        ArrayList<Tweet> timeline = new ArrayList<Tweet>();
+	        ArrayList<Chirp> timeline = new ArrayList<Chirp>();
 	        for (String s : following)
 	        {
-	        	for (Tweet t : tService.findTweetsByEmail(s))
+	        	for (Chirp t : tService.findTweetsByEmail(s))
 	        	{
 	        		timeline.add(t);
 	        	}
 	        }
 	        return timeline;
-	}, json());
+		}, json());
 		
 		get("/users", (req, res) -> {
 			return uService.getUsers();

@@ -1,12 +1,12 @@
 import java.util.Date;
 
-public class Tweet 
+public class Chirp 
 {
 	private String creatorEmail;
 	private Date time;
 	private String message;
 	
-	public Tweet(String email, String m)
+	public Chirp(String email, String m)
 	{
 		this.creatorEmail = email;
 		this.time = new Date();

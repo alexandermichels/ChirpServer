@@ -4,7 +4,7 @@ public class User
 {
 	
 	private String email;
-	private String fullName;
+	private String handle;
 	private ArrayList<String> following;
 	
 	// Gson wants a default constructor
@@ -13,14 +13,14 @@ public class User
 
 	}
 	
-	public User(String email, String fullName) {
+	public User(String email, String handle) {
 		this.email = email;
-		this.fullName = fullName;
+		this.handle = handle;
 	}
 	
 	@Override
 	public String toString() {
-		return email+" "+fullName;
+		return email;
 	}
 
 	public String getEmail() {
@@ -31,12 +31,12 @@ public class User
 		this.email = email;
 	}
 
-	public String getFullName() {
-		return fullName;
+	public String getHandle() {
+		return handle;
 	}
 
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public void setHandle(String handle) {
+		this.handle = handle;
 	}
 
 	public ArrayList<String> getFollowing() {

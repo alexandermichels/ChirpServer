@@ -3,6 +3,10 @@ import static spark.Spark.port;
 
 import org.apache.log4j.BasicConfigurator;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+
 public class App {
 	
 	
@@ -11,9 +15,11 @@ public class App {
     		BasicConfigurator.configure();
     		after((req,res) -> res.type("application/json"));
     		InMemoryUserStorage userStorage = new InMemoryUserStorage();
-    		InMemoryTweetStorage tweetStorage = new InMemoryTweetStorage();
+    		InMemoryChirpStorage tweetStorage = new InMemoryChirpStorage();
     		SampleData.addUsers(userStorage);
-		new Controller(new UserServiceImpl(userStorage), new TweetServiceImpl(tweetStorage));
+    		AmazonDynamoDB db = AmazonDynamoDBClientBuilder.defaultClient();
+    		
+		new Controller(new UserServiceImpl(userStorage), new ChirpServiceImpl(tweetStorage));
     }
 
 }
