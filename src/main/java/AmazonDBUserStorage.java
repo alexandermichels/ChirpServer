@@ -1,44 +1,64 @@
+import java.util.ArrayList;
 import java.util.List;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.ItemCollection;
+import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
+import com.amazonaws.services.dynamodbv2.document.ScanOutcome;
+import com.amazonaws.services.dynamodbv2.document.Table;
 
 public class AmazonDBUserStorage implements UserStorage
 {
-	private AmazonDynamoDB db;
 	
 	public AmazonDBUserStorage(AmazonDynamoDB db)
 	{
-		this.db = db;
+		
+	}
+	
+	private Table getTable()
+	{
+		return DynamoDBConnector.get().getDB().getTable("UserTable");
 	}
 
 	@Override
 	public List<User> getUsers() throws StorageException {
-		// TODO Auto-generated method stub
-		return null;
+		Table t = getTable();
+		ItemCollection<ScanOutcome> c = t.scan();
+		ArrayList<User> users = new ArrayList<>();
+		for(Item item: c) 
+		{
+			users.add(User.fromItem(item));
+		}
+		return users;
 	}
 
 	@Override
 	public User findUserByEmail(String email) throws StorageException {
-		// TODO Auto-generated method stub
-		return null;
+		Table t = getTable();
+		return User.fromItem(t.getItem("email", email));
 	}
 
 	@Override
 	public void addUser(User u) throws StorageException {
-		// TODO Auto-generated method stub
-		
+		Table t = getTable();
+		Item i = u.toItem();
+		t.putItem(i);
 	}
 
 	@Override
-	public void updateUser(String email, String name) throws StorageException {
-		// TODO Auto-generated method stub
-		
+	public void updateUser(User u) throws StorageException {
+		Table t = getTable();
+		AttributeUpdate h = new AttributeUpdate("handle").put(u.getHandle());
+		AttributeUpdate f = new AttributeUpdate("following").put(u.getFollowing());
+		t.updateItem(new PrimaryKey("email", u.getEmail()), h, f);
 	}
 
 	@Override
 	public void deleteUser(String email) throws StorageException {
-		// TODO Auto-generated method stub
-		
+		Table t = getTable();
+		t.deleteItem(new PrimaryKey("email", email));
 	}
 
 }
