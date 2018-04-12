@@ -24,7 +24,7 @@ public class Controller {
 	        ArrayList<Chirp> timeline = new ArrayList<Chirp>();
 	        for (String s : following)
 	        {
-	        	for (Chirp t : tService.findTweetsByEmail(s))
+	        	for (Chirp t : tService.findChirpsByEmail(s))
 	        	{
 	        		timeline.add(t);
 	        	}

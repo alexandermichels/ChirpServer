@@ -27,8 +27,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateUser(String email, String handle) throws DuplicateEmailException, StorageException {
-		storage.updateUser(email, handle);
+	public void updateUser(User u) throws DuplicateEmailException, StorageException {
+		storage.updateUser(u);
 	}
 
 	@Override

@@ -5,23 +5,23 @@ import java.util.List;
 
 public class InMemoryChirpStorage implements ChirpStorage 
 {
-	HashMap<String, ArrayList<Chirp>> userTweets;
+	HashMap<String, ArrayList<Chirp>> userChirps;
 
 	public InMemoryChirpStorage()
 	{
-		userTweets = new HashMap<>();
+		userChirps = new HashMap<>();
 	}
 	
 	@Override
-	public List<Chirp> findTweetsByEmail(String email) 
+	public List<Chirp> findChirpsByEmail(String email) 
 	{
-		return userTweets.get(email);
+		return userChirps.get(email);
 	}
 
 	@Override
-	public Chirp findTweetByEmailAndDate(String email, Date date) throws ChirpNotFoundException 
+	public Chirp findChirpByEmailAndDate(String email, Date date) throws ChirpNotFoundException 
 	{
-		ArrayList<Chirp> theirTweets = userTweets.get(email);
+		ArrayList<Chirp> theirTweets = userChirps.get(email);
 		for (Chirp t : theirTweets)
 		{
 			if (date.equals(t.getTime()))
@@ -31,33 +31,53 @@ public class InMemoryChirpStorage implements ChirpStorage
 		}
 		throw new ChirpNotFoundException(email, date);
 	}
+	
+	@Override
+	public List<Chirp> findChirpsWithMentions(String handle)
+	{
+		ArrayList<Chirp> chirps = new ArrayList<>();
+		for (ArrayList<Chirp> c : userChirps.values())
+		{
+			for (Chirp p : c)
+			{
+				for (int i = 0; i < p.getMessage().length()-handle.length()-1; i++)
+				{
+					if (p.getMessage().substring(i, i+handle.length()+1).equals("&"+handle))
+					{
+						chirps.add(p);
+					}		
+				}
+			}
+		}
+		return chirps;
+	}
 
 	@Override
 	public void add(Chirp t) 
 	{
-		if (userTweets.get(t.getCreator()) == null)
+		if (userChirps.get(t.getCreator()) == null)
 		{
-			userTweets.put(t.getCreator(), new ArrayList<Chirp>());
-			userTweets.get(t.getCreator()).add(t);
+			userChirps.put(t.getCreator(), new ArrayList<Chirp>());
+			userChirps.get(t.getCreator()).add(t);
 		}
 		else
 		{
-			userTweets.get(t.getCreator()).add(t);
+			userChirps.get(t.getCreator()).add(t);
 		}
 	}
 
 	@Override
-	public void remove(String email, Date date) throws ChirpNotFoundException 
+	public void remove(Chirp c) throws ChirpNotFoundException 
 	{
-		ArrayList<Chirp> theirTweets = userTweets.get(email);
+		ArrayList<Chirp> theirTweets = userChirps.get(c.getCreator());
 		for (Chirp t : theirTweets)
 		{
-			if (date.equals(t.getTime()))
+			if (c.getTime().equals(t.getTime()))
 			{
 				theirTweets.remove(t);
 			}
 		}
-		throw new ChirpNotFoundException(email, date);
+		throw new ChirpNotFoundException(c.getCreator(), c.getTime());
 	}
 
 }

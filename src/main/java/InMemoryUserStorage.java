@@ -27,14 +27,12 @@ public class InMemoryUserStorage implements UserStorage {
 	}
 
 	@Override
-	public void updateUser(String email, String handle) throws StorageException {
-		// TODO Auto-generated method stub
-		users.get(email).setHandle(handle);
+	public void updateUser(User u) throws StorageException {
+		users.put(u.getEmail(), u);
 	}
 
 	@Override
 	public void deleteUser(String string) throws StorageException {
-		// TODO Auto-generated method stub
 		users.remove(string);
 	}
 

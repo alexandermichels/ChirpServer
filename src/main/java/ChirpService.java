@@ -3,8 +3,9 @@ import java.util.List;
 
 public interface ChirpService 
 {
-	public List<Chirp> findTweetsByEmail(String email);
-	public Chirp findTweetByEmailAndDate(String email, Date date) throws ChirpNotFoundException;
-	public void createTweet(String email, String m);
-	public void deleteTweet(String email, Date date) throws ChirpNotFoundException;
+	public List<Chirp> findChirpsByEmail(String email);
+	public Chirp findChirpByEmailAndDate(String email, Date date) throws ChirpNotFoundException;
+	public List<Chirp> findChirpsWithMentions(String handle);
+	public void createChirp(String email, String m);
+	public void deleteChirp(Chirp c) throws ChirpNotFoundException;
 }
