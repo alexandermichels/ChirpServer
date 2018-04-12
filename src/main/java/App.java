@@ -17,7 +17,6 @@ public class App {
     		InMemoryUserStorage userStorage = new InMemoryUserStorage();
     		InMemoryChirpStorage tweetStorage = new InMemoryChirpStorage();
     		SampleData.addUsers(userStorage);
-    		AmazonDynamoDB db = AmazonDynamoDBClientBuilder.defaultClient();
     		
 		new Controller(new UserServiceImpl(userStorage), new ChirpServiceImpl(tweetStorage));
     }

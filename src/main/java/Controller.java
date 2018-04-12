@@ -18,16 +18,18 @@ public class Controller {
 	// DELETE -> delete
 	private static String USER_EMAIL;
 	
-	public Controller(final UserService uService, final ChirpService tService) {
+	public Controller(final UserService uService, final ChirpService cService) {
 		get("/", (req, res) -> {
 	        ArrayList<String> following = uService.findUserByEmail(USER_EMAIL).getFollowing();
 	        ArrayList<Chirp> timeline = new ArrayList<Chirp>();
 	        for (String s : following)
 	        {
-	        	for (Chirp t : tService.findChirpsByEmail(s))
+	        	for (Chirp t : cService.findChirpsByEmail(s))
 	        	{
 	        		timeline.add(t);
 	        	}
+	        	String handle = uService.findUserByEmail(USER_EMAIL).getHandle();
+	        	timeline.addAll(cService.findChirpsWithMentions(handle));
 	        }
 	        return timeline;
 		}, json());
