@@ -6,6 +6,7 @@ public class User
 {
 	
 	private String email;
+	private String hash;
 	private String handle;
 	private ArrayList<String> following;
 	
@@ -15,8 +16,9 @@ public class User
 
 	}
 	
-	public User(String email, String handle) {
+	public User(String email, String shaHash, String handle) {
 		this.email = email;
+		this.hash = shaHash;
 		this.handle = handle;
 	}
 	
@@ -31,6 +33,14 @@ public class User
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
 	}
 
 	public String getHandle() {
@@ -65,7 +75,7 @@ public class User
 	
 	public static User fromItem(Item item)
 	{
-		User u = new User(item.getString("email"),item.getString("handle"));
+		User u = new User(item.getString("email"),item.getString("hash"),item.getString("handle"));
 		u.setFollowing(new ArrayList<String>(item.getList("following")));
 		return u;
 	}
@@ -75,11 +85,11 @@ public class User
 		Item i = new Item();
 		if (following != null)
 		{
-			i.withPrimaryKey("email", this.getEmail()).withString("handle", this.getHandle()).withList("following", this.getFollowing());
+			i.withPrimaryKey("email", this.getEmail()).withString("hash", this.getHash()).withString("handle", this.getHandle()).withList("following", this.getFollowing());
 		}
 		else
 		{
-			i.withPrimaryKey("email", this.getEmail()).withString("handle", this.getHandle()).withList("following", new ArrayList<String>());
+			i.withPrimaryKey("email", this.getEmail()).withString("hash", this.getHash()).withString("handle", this.getHandle()).withList("following", new ArrayList<String>());
 		}
 		return i;
 	}

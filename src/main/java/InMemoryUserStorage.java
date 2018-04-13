@@ -22,8 +22,15 @@ public class InMemoryUserStorage implements UserStorage {
 	}
 
 	@Override
-	public void addUser(User u) throws StorageException {
-		 users.put(u.getEmail(), u);
+	public void addUser(User u) throws DuplicateEmailException, StorageException {
+		if (users.get(u.getEmail()) != null)
+		{
+			throw new DuplicateEmailException(u.getEmail() + " is already registered with Chirp");
+		}
+		else
+		{
+			users.put(u.getEmail(), u);
+		}
 	}
 
 	@Override

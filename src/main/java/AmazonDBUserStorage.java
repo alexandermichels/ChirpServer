@@ -41,10 +41,18 @@ public class AmazonDBUserStorage implements UserStorage
 	}
 
 	@Override
-	public void addUser(User u) throws StorageException {
+	public void addUser(User u) throws DuplicateEmailException, StorageException {
 		Table t = getTable();
-		Item i = u.toItem();
-		t.putItem(i);
+		try
+		{
+			findUserByEmail(u.getEmail());
+			throw new DuplicateEmailException(u.getEmail() + " is already registered with Chirp");
+		}
+		catch(StorageException e)
+		{
+			Item i = u.toItem();
+			t.putItem(i);
+		}
 	}
 
 	@Override
@@ -52,7 +60,8 @@ public class AmazonDBUserStorage implements UserStorage
 		Table t = getTable();
 		AttributeUpdate h = new AttributeUpdate("handle").put(u.getHandle());
 		AttributeUpdate f = new AttributeUpdate("following").put(u.getFollowing());
-		t.updateItem(new PrimaryKey("email", u.getEmail()), h, f);
+		AttributeUpdate p = new AttributeUpdate("hash").put(u.getHash());
+		t.updateItem(new PrimaryKey("email", u.getEmail()), h, f, p);
 	}
 
 	@Override

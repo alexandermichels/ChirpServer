@@ -20,8 +20,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void createUser(String email, String handle) throws DuplicateEmailException, StorageException {
-		User u = new User(email, handle);
+	public void createUser(String email, String hash, String handle) throws DuplicateEmailException, StorageException {
+		User u = new User(email, hash, handle);
 		storage.addUser(u);
 
 	}

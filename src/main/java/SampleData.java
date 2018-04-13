@@ -1,12 +1,12 @@
 public class SampleData 
 {
 	
-	public static void addUsers(UserStorage us) throws StorageException 
+	public static void addUsers(UserStorage us) throws DuplicateEmailException, StorageException 
 	{
 		User [] users = new User[10];
 		for (int i = 0; i < 10; i++)
 		{
-			users[i] = new User("test" + i + "@example.com", "test" + i);
+			users[i] = new User("test" + i + "@example.com", StringUtil.applySha256("test" + i + "@example.com" + "password" + i), "test" + i);
 			for (int j = 0; j < i; j++)
 			{
 				users[i].addFollowing(users[j].getEmail());

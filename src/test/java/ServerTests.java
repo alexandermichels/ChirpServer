@@ -8,7 +8,7 @@ public class ServerTests
 	@Test
 	public void userTests()
 	{
-		User u = new User("test@example.com", "test");
+		User u = new User("test@example.com", StringUtil.applySha256("test@example.com" + "password"), "test");
 		assert(u.getEmail().equals("test@example.com"));
 		assert(u.getHandle().equals("test"));
 		Item i = u.toItem();
@@ -20,7 +20,7 @@ public class ServerTests
 	@Test
 	public void userTests2()
 	{
-		User u = new User("test@example.com", "test");
+		User u = new User("test@example.com", StringUtil.applySha256("test@example.com" + "password"), "test");
 		u.addFollowing("no one");
 		u.addFollowing("someone");
 		String [] f = {"no one", "someone"};
@@ -45,6 +45,18 @@ public class ServerTests
 	}
 	
 	@Test
-	public void 
+	public void userServiceInMemoryCreateUser() throws DuplicateEmailException, StorageException
+	{
+		UserServiceImpl serv = new UserServiceImpl(new InMemoryUserStorage());
+		serv.createUser("test@example.com", StringUtil.applySha256("test@example.com" + "password"), "test");
+	}
+	
+	@Test(expected = DuplicateEmailException.class)
+	public void userServiceInMemoryDuplicateEmailExceptionWorks() throws DuplicateEmailException, StorageException
+	{
+		UserServiceImpl serv = new UserServiceImpl(new InMemoryUserStorage());
+		serv.createUser("test@example.com", StringUtil.applySha256("test@example.com" + "password"), "test");
+		serv.createUser("test@example.com", StringUtil.applySha256("test@example.com" + "password"), "test1");
+	}
 	
 }
