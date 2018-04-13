@@ -43,4 +43,8 @@ public class ServerTests
 		assert(c.getMessage().equals("Chirping is fun"));
 		assert(c.getID().equals(c.getCreator()+c.getTime().getTime()));
 	}
+	
+	@Test
+	public void 
+	
 }
