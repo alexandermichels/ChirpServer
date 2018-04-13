@@ -42,7 +42,7 @@ public class Chirp
 	
 	public static Chirp fromItem(Item item)
 	{
-		Chirp c = new Chirp(item.getString("email"),item.getString("message"));
+		Chirp c = new Chirp(item.getString("creator"),item.getString("message"));
 		c.setTime(item.getLong("date"));
 		return c;
 	}

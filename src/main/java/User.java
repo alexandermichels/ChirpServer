@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import com.amazonaws.services.dynamodbv2.document.Item;
 
@@ -52,7 +51,16 @@ public class User
 	
 	public void addFollowing(String f)
 	{
-		getFollowing().add(f);
+		if (getFollowing() != null)
+		{
+			getFollowing().add(f);
+		}
+		else
+		{
+			ArrayList<String> a = new ArrayList<String>();
+			a.add(f);
+			setFollowing(a);
+		}
 	}
 	
 	public static User fromItem(Item item)
@@ -65,7 +73,14 @@ public class User
 	public Item toItem()
 	{
 		Item i = new Item();
-		i.withPrimaryKey("email", this.getEmail()).withString("handle", this.getHandle()).withList("following", this.getFollowing());
+		if (following != null)
+		{
+			i.withPrimaryKey("email", this.getEmail()).withString("handle", this.getHandle()).withList("following", this.getFollowing());
+		}
+		else
+		{
+			i.withPrimaryKey("email", this.getEmail()).withString("handle", this.getHandle()).withList("following", new ArrayList<String>());
+		}
 		return i;
 	}
 
