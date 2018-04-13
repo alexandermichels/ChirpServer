@@ -93,5 +93,55 @@ public class User
 		}
 		return i;
 	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		User other = ((User)o);
+		if (!this.getEmail().equals(other.getEmail()))
+		{
+			return false;
+		}
+		else if (!this.getHandle().equals(other.getHandle()))
+		{
+			return false;
+		}
+		else if (!this.getHash().equals(other.getHash()))
+		{
+			return false;
+		}
+		else
+		{
+			if (this.getFollowing() == null && other.getFollowing() == null)
+			{
+				
+			}
+			else if (this.getFollowing() == null || other.getFollowing() == null)
+			{
+				return false;
+			}
+			else
+			{
+				for (String s : this.getFollowing())
+				{
+					boolean matched = false;
+					for (String t : other.getFollowing())
+					{
+						if (s.equals(t))
+						{
+							matched = true;
+						}
+					}
+					
+					if (!matched)
+					{
+						return false;
+					}
+				}
+			}
+		}
+		
+		return true;
+	}
 
 }

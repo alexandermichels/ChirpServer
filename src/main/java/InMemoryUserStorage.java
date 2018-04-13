@@ -12,7 +12,7 @@ public class InMemoryUserStorage implements UserStorage {
 	}
 
 	@Override
-	public List<User> getUsers() throws StorageException {
+	public ArrayList<User> getUsers() throws StorageException {
 		return new ArrayList<>(users.values());
 	}
 

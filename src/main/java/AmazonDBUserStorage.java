@@ -23,7 +23,7 @@ public class AmazonDBUserStorage implements UserStorage
 	}
 
 	@Override
-	public List<User> getUsers() throws StorageException {
+	public ArrayList<User> getUsers() throws StorageException {
 		Table t = getTable();
 		ItemCollection<ScanOutcome> c = t.scan();
 		ArrayList<User> users = new ArrayList<>();

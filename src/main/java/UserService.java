@@ -1,8 +1,8 @@
-import java.util.List;
+import java.util.ArrayList;
 
 public interface UserService {
 	
-	public List<User> getUsers() throws UserAppException;
+	public ArrayList<User> getUsers() throws UserAppException;
 	public User findUserByEmail(String email) throws UserAppException;
 	public void createUser(String email, String hash, String handle) throws UserAppException;
 	public void updateUser(User u) throws UserAppException;

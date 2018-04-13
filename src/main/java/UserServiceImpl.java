@@ -1,4 +1,4 @@
-import java.util.List;
+import java.util.ArrayList;
 
 public class UserServiceImpl implements UserService {
 	
@@ -10,7 +10,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> getUsers() throws StorageException {
+	public ArrayList<User> getUsers() throws StorageException {
 		return storage.getUsers();
 	}
 	
