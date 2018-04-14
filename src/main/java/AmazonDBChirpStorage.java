@@ -12,7 +12,7 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 
 public class AmazonDBChirpStorage implements ChirpStorage
 {
-	public AmazonDBChirpStorage(AmazonDynamoDB db)
+	public AmazonDBChirpStorage()
 	{
 		
 	}
@@ -23,7 +23,7 @@ public class AmazonDBChirpStorage implements ChirpStorage
 	}
 
 	@Override
-	public List<Chirp> findChirpsByEmail(String email) {
+	public ArrayList<Chirp> findChirpsByEmail(String email) {
 		Table t = getTable();
 		ScanFilter s = new ScanFilter("creator").eq(email);
 		ItemCollection<ScanOutcome> c = t.scan(s);
@@ -42,7 +42,7 @@ public class AmazonDBChirpStorage implements ChirpStorage
 	}
 	
 	@Override
-	public List<Chirp> findChirpsWithMentions(String handle)
+	public ArrayList<Chirp> findChirpsWithMentions(String handle)
 	{
 		Table t = getTable();
 		ScanFilter s = new ScanFilter("message").contains("&"+handle);

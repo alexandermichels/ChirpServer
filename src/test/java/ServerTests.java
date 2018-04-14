@@ -4,8 +4,10 @@ import static org.hamcrest.Matchers.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.BasicConfigurator;
 import org.junit.*;
 import com.amazonaws.services.dynamodbv2.document.Item;
 
@@ -78,7 +80,7 @@ public class ServerTests
 	}
 	
 	@Test
-	public void userServerInMemorySampleData() throws UserAppException
+	public void userServiceInMemorySampleData() throws UserAppException
 	{
 		InMemoryUserStorage stor = new InMemoryUserStorage();
 		SampleData.addUsers(stor);
@@ -86,7 +88,7 @@ public class ServerTests
 	}
 	
 	@Test
-	public void userServerInMemoryGetUsers() throws UserAppException
+	public void userServiceInMemoryGetUsers() throws UserAppException
 	{
 		InMemoryUserStorage stor = new InMemoryUserStorage();
 		SampleData.addUsers(stor);
@@ -115,6 +117,177 @@ public class ServerTests
 			}
 			
 			assert(matched);
+		}
+	}
+	
+	@Test
+	public void chirpServiceInMemoryCreateChirp()
+	{
+		ChirpServiceImpl serv = new ChirpServiceImpl(new InMemoryChirpStorage());
+		serv.createChirp("test@example.com", "test");
+	}
+	
+	@Test
+	public void chirpServiceInMemorySampleData() throws StorageException
+	{
+		InMemoryChirpStorage stor = new InMemoryChirpStorage();
+		SampleData.addChirps(stor);
+		ChirpServiceImpl serv = new ChirpServiceImpl(stor);
+	}
+	
+	@Test(expected = ChirpNotFoundException.class)
+	public void chirpServiceInMemoryDeleteChirp1() throws StorageException, ChirpNotFoundException
+	{
+		InMemoryChirpStorage stor = new InMemoryChirpStorage();
+		SampleData.addChirps(stor);
+		ChirpServiceImpl serv = new ChirpServiceImpl(stor);
+		serv.deleteChirp(new Chirp("test10@example", "I know you can't find this one"));
+	}
+	
+	@Test(expected = ChirpNotFoundException.class)
+	public void chirpServiceInMemoryDeleteChirp2() throws StorageException, ChirpNotFoundException
+	{
+		InMemoryChirpStorage stor = new InMemoryChirpStorage();
+		SampleData.addChirps(stor);
+		ChirpServiceImpl serv = new ChirpServiceImpl(stor);
+		serv.deleteChirp(new Chirp("test2@example", "I know you can't find this one"));
+	}
+	
+	@Test
+	public void chirpServiceInMemoryFindMentions() throws StorageException
+	{
+		InMemoryChirpStorage stor = new InMemoryChirpStorage();
+		SampleData.addChirps(stor);
+		ChirpServiceImpl serv = new ChirpServiceImpl(stor);
+		Chirp [][] mentions = new Chirp[10][3];
+		for (int i = 0; i < 10; i++)
+		{
+			ArrayList<Chirp> c = serv.findChirpsWithMentions("test" + i);
+			for (int j = 0; j < c.size(); j++)
+			{
+				mentions[i][j]=c.get(j);
+			}
+			assert(c.size() == 3);
+		}
+	}
+	
+	@Test
+	public void chirpServiceInMemoryFindChirpsByEmail() throws StorageException
+	{
+		InMemoryChirpStorage stor = new InMemoryChirpStorage();
+		SampleData.addChirps(stor);
+		ChirpServiceImpl serv = new ChirpServiceImpl(stor);
+		Chirp [][] mentions = new Chirp[10][4];
+		for (int i = 0; i < 10; i++)
+		{
+			ArrayList<Chirp> c = serv.findChirpsByEmail("test" + i + "@example.com");
+			for (int j = 0; j < c.size(); j++)
+			{
+				mentions[i][j]=c.get(j);
+			}
+			assert(c.size() == 4);
+		}
+	}
+	
+	@Test
+	public void chirpServiceInMemoryFindChirpByEmailAndDate() throws ChirpNotFoundException, StorageException
+	{
+		InMemoryChirpStorage stor = new InMemoryChirpStorage();
+		SampleData.addChirps(stor);
+		ChirpServiceImpl serv = new ChirpServiceImpl(stor);
+		Chirp [][] mentions = new Chirp[10][4];
+		for (int i = 0; i < 10; i++)
+		{
+			ArrayList<Chirp> c = serv.findChirpsByEmail("test" + i + "@example.com");
+			for (int j = 0; j < c.size(); j++)
+			{
+				mentions[i][j]=c.get(j);
+			}
+		}
+		
+		for (Chirp [] a : mentions)
+		{
+			for (Chirp c : a)
+			{
+				Chirp p = serv.findChirpByEmailAndDate(c.getCreator(), c.getTime());
+			}
+		}
+	}
+	
+	@Test(expected = ChirpNotFoundException.class)
+	public void chirpServiceInMemoryFindChirpByEmailAndDateFail() throws ChirpNotFoundException, StorageException
+	{
+		InMemoryChirpStorage stor = new InMemoryChirpStorage();
+		SampleData.addChirps(stor);
+		ChirpServiceImpl serv = new ChirpServiceImpl(stor);		
+		Chirp c = serv.findChirpByEmailAndDate("test0@example.com", new Date(00000));
+	}
+	
+	@Test
+	public void userServiceAmazonDBCreateUser() throws DuplicateEmailException, StorageException
+	{
+		BasicConfigurator.configure();
+		UserServiceImpl serv = new UserServiceImpl(new AmazonDBUserStorage());
+		serv.createUser("test@example.com", StringUtil.applySha256("test@example.com" + "password"), "test");
+	}
+	
+	@Test(expected = DuplicateEmailException.class)
+	public void userServiceAmazonDBCreateUserFails() throws DuplicateEmailException, StorageException
+	{
+		BasicConfigurator.configure();
+		UserServiceImpl serv = new UserServiceImpl(new AmazonDBUserStorage());
+		serv.createUser("test@example.com", StringUtil.applySha256("test@example.com" + "password"), "test");
+	}
+	
+	@Test
+	public void userServiceAmazonDBFindUserByEmail() throws StorageException, DuplicateEmailException
+	{
+		BasicConfigurator.configure();
+		UserServiceImpl serv = new UserServiceImpl(new AmazonDBUserStorage());
+		serv.createUser("hello@hi.com", StringUtil.applySha256("hello@hi.comhello"), "Hello");
+		User u = serv.findUserByEmail("hello@hi.com");
+		assert(u.getEmail().equals("hello@hi.com"));
+		assert(u.getHandle().equals("Hello"));
+		assert(u.getHash().equals(StringUtil.applySha256("hello@hi.comhello")));
+		serv.deleteUser("hello@hi.com");
+	}
+	
+	@Test
+	public void userServiceAmazonDBDeleteUser() throws StorageException
+	{
+		BasicConfigurator.configure();
+		UserServiceImpl serv = new UserServiceImpl(new AmazonDBUserStorage());
+		serv.deleteUser("test@example.com");
+	}
+	
+	@Test
+	public void userServiceAmazonDBSampleData() throws DuplicateEmailException, StorageException
+	{
+		BasicConfigurator.configure();
+		AmazonDBUserStorage stor = new AmazonDBUserStorage();
+		SampleData.addUsers(stor);
+		UserServiceImpl serv = new UserServiceImpl(stor);
+	}
+	
+	
+	@Test
+	public void userServiceAmazonDBGetUsers() throws DuplicateEmailException, StorageException
+	{
+		BasicConfigurator.configure();
+		AmazonDBUserStorage stor = new AmazonDBUserStorage();
+		UserServiceImpl serv = new UserServiceImpl(stor);
+		ArrayList<User> users = serv.getUsers();
+	}
+	
+	@After
+	public void userServiceAmazonDBCleanUpSampleData() throws StorageException
+	{
+		BasicConfigurator.configure();
+		AmazonDBUserStorage stor = new AmazonDBUserStorage();
+		UserServiceImpl serv = new UserServiceImpl(stor);
+		for (int i = 0; i < 10; i++)
+		{
+			serv.deleteUser("test"+i+"@example.com");
 		}
 	}
 }

@@ -13,7 +13,7 @@ public class InMemoryChirpStorage implements ChirpStorage
 	}
 	
 	@Override
-	public List<Chirp> findChirpsByEmail(String email) 
+	public ArrayList<Chirp> findChirpsByEmail(String email) 
 	{
 		return userChirps.get(email);
 	}
@@ -21,26 +21,33 @@ public class InMemoryChirpStorage implements ChirpStorage
 	@Override
 	public Chirp findChirpByEmailAndDate(String email, Date date) throws ChirpNotFoundException 
 	{
-		ArrayList<Chirp> theirTweets = userChirps.get(email);
-		for (Chirp t : theirTweets)
+		if (userChirps.get(email) == null)
 		{
-			if (date.equals(t.getTime()))
-			{
-				return t;
-			}
+			throw new ChirpNotFoundException(email, "");
 		}
-		throw new ChirpNotFoundException(email, date);
+		else
+		{
+			ArrayList<Chirp> theirTweets = userChirps.get(email);
+			for (Chirp t : theirTweets)
+			{
+				if (date.equals(t.getTime()))
+				{
+					return t;
+				}
+			}
+			throw new ChirpNotFoundException(email, "");
+		}
 	}
 	
 	@Override
-	public List<Chirp> findChirpsWithMentions(String handle)
+	public ArrayList<Chirp> findChirpsWithMentions(String handle)
 	{
 		ArrayList<Chirp> chirps = new ArrayList<>();
 		for (ArrayList<Chirp> c : userChirps.values())
 		{
 			for (Chirp p : c)
 			{
-				for (int i = 0; i < p.getMessage().length()-handle.length()-1; i++)
+				for (int i = 0; i < p.getMessage().length()-handle.length(); i++)
 				{
 					if (p.getMessage().substring(i, i+handle.length()+1).equals("&"+handle))
 					{
@@ -69,15 +76,27 @@ public class InMemoryChirpStorage implements ChirpStorage
 	@Override
 	public void remove(Chirp c) throws ChirpNotFoundException 
 	{
+		boolean removed = false;
 		ArrayList<Chirp> theirTweets = userChirps.get(c.getCreator());
-		for (Chirp t : theirTweets)
+		if (theirTweets == null)
 		{
-			if (c.getTime().equals(t.getTime()))
+			throw new ChirpNotFoundException(c.getCreator(), c.getMessage());
+		}
+		else
+		{
+			for (Chirp t : theirTweets)
 			{
-				theirTweets.remove(t);
+				if (c.getID().equals(t.getID()))
+				{
+					theirTweets.remove(t);
+					removed = true;
+				}
 			}
 		}
-		throw new ChirpNotFoundException(c.getCreator(), c.getTime());
+		if (!removed)
+		{
+			throw new ChirpNotFoundException(c.getCreator(), c.getMessage());
+		}
 	}
 
 }

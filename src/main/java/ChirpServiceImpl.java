@@ -1,5 +1,5 @@
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class ChirpServiceImpl implements ChirpService {
 	
@@ -11,7 +11,7 @@ public class ChirpServiceImpl implements ChirpService {
 	}
 
 	@Override
-	public List<Chirp> findChirpsByEmail(String email) {
+	public ArrayList<Chirp> findChirpsByEmail(String email) {
 		return storage.findChirpsByEmail(email);
 	}
 
@@ -21,7 +21,7 @@ public class ChirpServiceImpl implements ChirpService {
 	}
 	
 	@Override
-	public List<Chirp> findChirpsWithMentions(String handle)
+	public ArrayList<Chirp> findChirpsWithMentions(String handle)
 	{
 		return storage.findChirpsWithMentions(handle);
 	}

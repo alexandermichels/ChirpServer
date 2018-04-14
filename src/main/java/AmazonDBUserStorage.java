@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.List;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
@@ -12,7 +11,7 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 public class AmazonDBUserStorage implements UserStorage
 {
 	
-	public AmazonDBUserStorage(AmazonDynamoDB db)
+	public AmazonDBUserStorage()
 	{
 		
 	}
@@ -37,7 +36,14 @@ public class AmazonDBUserStorage implements UserStorage
 	@Override
 	public User findUserByEmail(String email) throws StorageException {
 		Table t = getTable();
-		return User.fromItem(t.getItem("email", email));
+		try
+		{
+			return User.fromItem(t.getItem(new PrimaryKey("email", email)));
+		}
+		catch (NullPointerException e)
+		{
+			throw new StorageException("User:" + email + " could not be found");
+		}
 	}
 
 	@Override

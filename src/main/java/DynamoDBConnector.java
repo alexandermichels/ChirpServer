@@ -10,7 +10,7 @@ public class DynamoDBConnector
 	
 	private DynamoDBConnector()
 	{
-		client = AmazonDynamoDBClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
+		client = AmazonDynamoDBClientBuilder.standard().withRegion(Regions.US_EAST_2).build();
 		
 	}
 	

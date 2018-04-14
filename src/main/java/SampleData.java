@@ -20,9 +20,9 @@ public class SampleData
 		for(int i = 0; i < 10; i++)
 		{
 			cs.add(new Chirp("test" + i + "@example.com", "Random words"));
-			cs.add(new Chirp("test" + i + "@example.com", "I really like test" + ((i+4)%10) + ", they're a cool person"));
-			cs.add(new Chirp("test" + i + "@example.com", "test" + ((i+7)%10) + " is an asshole"));
-			cs.add(new Chirp("test" + i + "@example.com", "Someone really boring: test" + ((i+2)%10)));
+			cs.add(new Chirp("test" + i + "@example.com", "I really like &test" + ((i+4)%10) + ", they're a cool person"));
+			cs.add(new Chirp("test" + i + "@example.com", "&test" + ((i+7)%10) + " is an asshole"));
+			cs.add(new Chirp("test" + i + "@example.com", "Someone really boring: &test" + ((i+2)%10)));
 		}
 	}
 }
