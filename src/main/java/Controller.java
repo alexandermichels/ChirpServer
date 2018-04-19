@@ -1,4 +1,5 @@
 import static spark.Spark.get;
+import static spark.Spark.post;
 import static spark.Spark.put;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,13 +35,65 @@ public class Controller {
 	        return timeline;
 		}, json());
 		
+		get("/login", (req, res) -> {
+			try
+			{
+				USER_EMAIL = req.attribute("username");
+			}
+			catch (Exception e)
+			{
+				return null;
+			}
+			
+			if (req.attribute("authenticated").equals("true"))
+			{
+				return true;
+			}
+			else if (req.attribute("hash").equals(uService.findUserByEmail(req.attribute("username")).getHash()))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+			
+		}, json());
+		
+		put("/register", (req, res) -> {
+			try
+			{
+				uService.createUser(req.attribute("username"), req.attribute("hash"), req.attribute("handle"));
+				return true;
+			}
+			catch (Exception e)
+			{
+				return false;
+			}
+			
+		}, json());
+		
+		get("/:username", (req, res) -> {
+			return cService.findChirpsByEmail(req.params(":username"));
+		}, json());
+		
+		post("/:username/follow", (req, res) -> {
+			User u;
+			try
+			{
+				 u = uService.findUserByEmail(USER_EMAIL);
+			}
+			catch(Exception e)
+			{
+				return false;
+			}
+			u.addFollowing(req.params(":username"));
+			return true;
+		}, json());
+		
 		get("/users", (req, res) -> {
 			return uService.getUsers();
 		}, json());
-		
-		get("/users/email", (req, res) -> {
-			return uService.findUserByEmail(req.attribute("email"));
-		}, json());		
 		
 	}
 
