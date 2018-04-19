@@ -14,11 +14,8 @@ public class App {
     		port(5010);
     		BasicConfigurator.configure();
     		after((req,res) -> res.type("application/json"));
-    		InMemoryUserStorage userStorage = new InMemoryUserStorage();
-    		InMemoryChirpStorage tweetStorage = new InMemoryChirpStorage();
-    		SampleData.addUsers(userStorage);
-    		
-    		
+    		AmazonDBUserStorage userStorage = new AmazonDBUserStorage();
+    		AmazonDBChirpStorage tweetStorage = new AmazonDBChirpStorage();
 		new Controller(new UserServiceImpl(userStorage), new ChirpServiceImpl(tweetStorage));
     }
 

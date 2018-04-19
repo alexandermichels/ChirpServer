@@ -47,17 +47,15 @@ public class Controller {
 			
 			if (req.attribute("authenticated").equals("true"))
 			{
-				res.redirect("/");
-				return true;
+				return uService.findUserByEmail(USER_EMAIL);
 			}
 			else if (req.attribute("hash").equals(uService.findUserByEmail(req.attribute("username")).getHash()))
 			{
-				res.redirect("/");
-				return true;
+				return uService.findUserByEmail(USER_EMAIL);
 			}
 			else
 			{
-				return false;
+				return null;
 			}
 			
 		}, json());
@@ -66,12 +64,11 @@ public class Controller {
 			try
 			{
 				uService.createUser(req.attribute("username"), req.attribute("hash"), req.attribute("handle"));
-				res.redirect("/");
-				return true;
+				return uService.findUserByEmail(USER_EMAIL);
 			}
 			catch (Exception e)
 			{
-				return false;
+				return null;
 			}
 			
 		}, json());

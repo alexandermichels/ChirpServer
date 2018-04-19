@@ -124,7 +124,7 @@ public class ServerTests
 	public void chirpServiceInMemoryCreateChirp()
 	{
 		ChirpServiceImpl serv = new ChirpServiceImpl(new InMemoryChirpStorage());
-		serv.createChirp("test@example.com", "test");
+		serv.createChirp(new Chirp("test@example.com", "test"));
 	}
 	
 	@Test
@@ -289,5 +289,40 @@ public class ServerTests
 		{
 			serv.deleteUser("test"+i+"@example.com");
 		}
+	}
+	
+	@Test
+	public void chirpServiceAmazonDBCreateChirp() 
+	{
+		BasicConfigurator.configure();
+		ChirpServiceImpl serv = new ChirpServiceImpl(new AmazonDBChirpStorage());
+		serv.createChirp(new Chirp("test@example.com", "test chirp"));
+	}
+	
+	@Test
+	public void chirpServiceAmazonDBFindChirpByEmailAndDate() throws ChirpNotFoundException
+	{
+		BasicConfigurator.configure();
+		ChirpServiceImpl serv = new ChirpServiceImpl(new AmazonDBChirpStorage());
+		Chirp c = new Chirp("test@example.com", "test chirp");
+		serv.createChirp(c);
+		Chirp d = serv.findChirpByEmailAndDate(c.getCreator(), c.getTime());
+		assert(c.getCreator().equals(d.getCreator()));
+		assert(c.getMessage().equals(d.getMessage()));
+		assert(c.getTime().equals(d.getTime()));
+	}
+	
+	@Test
+	public void chirpServiceAmazonDBFindChirpsByEmail() throws ChirpNotFoundException
+	{
+		BasicConfigurator.configure();
+		ChirpServiceImpl serv = new ChirpServiceImpl(new AmazonDBChirpStorage());
+		ArrayList<Chirp> c = serv.findChirpsByEmail("test@example.com");
+		for (Chirp p : c)
+		{
+			serv.deleteChirp(p);
+		}
+		c = serv.findChirpsByEmail("test@example.com");
+		assert(c.size() == 0);
 	}
 }

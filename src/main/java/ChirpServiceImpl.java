@@ -27,9 +27,8 @@ public class ChirpServiceImpl implements ChirpService {
 	}
 
 	@Override
-	public void createChirp(String email, String m) {
-		Chirp t = new Chirp(email, m);
-		storage.add(t);
+	public void createChirp(Chirp c) {
+		storage.add(c);
 	}
 
 	@Override
