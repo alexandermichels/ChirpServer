@@ -47,10 +47,12 @@ public class Controller {
 			
 			if (req.attribute("authenticated").equals("true"))
 			{
+				res.redirect("/");
 				return true;
 			}
 			else if (req.attribute("hash").equals(uService.findUserByEmail(req.attribute("username")).getHash()))
 			{
+				res.redirect("/");
 				return true;
 			}
 			else
@@ -64,6 +66,7 @@ public class Controller {
 			try
 			{
 				uService.createUser(req.attribute("username"), req.attribute("hash"), req.attribute("handle"));
+				res.redirect("/");
 				return true;
 			}
 			catch (Exception e)
