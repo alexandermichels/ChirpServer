@@ -48,7 +48,7 @@ public class AmazonDBChirpStorage implements ChirpStorage
 		ScanFilter s = new ScanFilter("message").contains("&"+handle);
 		ItemCollection<ScanOutcome> c = t.scan(s);
 		ArrayList<Chirp> chirps = new ArrayList<>();
-		for(Item item: c) 
+		for(Item item : c) 
 		{
 			chirps.add(Chirp.fromItem(item));
 		}

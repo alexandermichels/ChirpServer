@@ -325,4 +325,33 @@ public class ServerTests
 		c = serv.findChirpsByEmail("test@example.com");
 		assert(c.size() == 0);
 	}
+	
+	@Test
+	public void chirpServiceAmazonDBFindChirpsWithMentions() throws StorageException
+	{
+		BasicConfigurator.configure();
+		AmazonDBChirpStorage stor = new AmazonDBChirpStorage();
+		SampleData.addChirps(stor);
+		ChirpServiceImpl serv = new ChirpServiceImpl(stor);
+		for (int i = 0; i < 10; i++)
+		{
+			ArrayList<Chirp> c = serv.findChirpsWithMentions("test" + i);
+			assert(c.size() == 3);
+		}
+	}
+	
+	@After
+	public void cleanUpAmazonDBSampleChirps() throws ChirpNotFoundException
+	{
+		BasicConfigurator.configure();
+		ChirpServiceImpl serv = new ChirpServiceImpl(new AmazonDBChirpStorage());
+		for(int i = 0; i < 10; i++)
+		{
+			ArrayList<Chirp> c = serv.findChirpsByEmail("test" + i + "@example.com");
+			for (Chirp p : c)
+			{
+				serv.deleteChirp(p);
+			}
+		}
+	}
 }
