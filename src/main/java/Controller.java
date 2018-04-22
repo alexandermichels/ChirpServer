@@ -38,18 +38,18 @@ public class Controller {
 		get("/login", (req, res) -> {
 			try
 			{
-				USER_EMAIL = req.attribute("username");
+				USER_EMAIL = req.params("username");
 			}
 			catch (Exception e)
 			{
 				return null;
 			}
 			
-			if (req.attribute("authenticated").equals("true"))
+			if (req.params("authenticated").equals("true"))
 			{
 				return uService.findUserByEmail(USER_EMAIL);
 			}
-			else if (req.attribute("hash").equals(uService.findUserByEmail(req.attribute("username")).getHash()))
+			else if (req.params("hash").equals(uService.findUserByEmail(req.params("username")).getHash()))
 			{
 				return uService.findUserByEmail(USER_EMAIL);
 			}
@@ -63,8 +63,8 @@ public class Controller {
 		put("/register", (req, res) -> {
 			try
 			{
-				uService.createUser(req.attribute("username"), req.attribute("hash"), req.attribute("handle"));
-				USER_EMAIL = req.attribute("username");
+				uService.createUser(req.params("username"), req.params("hash"), req.params("handle"));
+				USER_EMAIL = req.params("username");
 				return uService.findUserByEmail(USER_EMAIL);
 			}
 			catch (Exception e)
