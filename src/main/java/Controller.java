@@ -68,6 +68,13 @@ public class Controller {
 			u.addFollowing(req.headers(":username"));
 			return true;
 		}, json());
+		
+		post("/:username/unfollow", (req, res) -> {
+			User u;
+			u = uService.findUserByEmail(req.headers("username"));
+			u.getFollowing().remove(req.headers(":username"));
+			return true;
+		}, json());
 
 		get("/users", (req, res) -> {
 			return uService.getUsers();
