@@ -20,7 +20,7 @@ public class Controller {
 
 	public Controller(final UserService uService, final ChirpService cService) {
 		get("/", (req, res) -> {
-			ArrayList<String> following = uService.findUserByEmail(req.params("username")).getFollowing();
+			ArrayList<String> following = uService.findUserByEmail(req.headers("username")).getFollowing();
 			ArrayList<Chirp> timeline = new ArrayList<Chirp>();
 			for (String s : following)
 			{
@@ -28,20 +28,20 @@ public class Controller {
 				{
 					timeline.add(t);
 				}
-				String handle = uService.findUserByEmail(req.params("username")).getHandle();
+				String handle = uService.findUserByEmail(req.headers("username")).getHandle();
 				timeline.addAll(cService.findChirpsWithMentions(handle));
 			}
 			return timeline;
 		}, json());
 
 		get("/login", (req, res) -> {
-			if (req.params("authenticated").equals("true"))
+			if (req.headers("authenticated").equals("true"))
 			{
-				return uService.findUserByEmail(req.params("username"));
+				return uService.findUserByEmail(req.headers("username"));
 			}
-			else if (req.params("hash").equals(uService.findUserByEmail(req.params("username")).getHash()))
+			else if (req.headers("hash").equals(uService.findUserByEmail(req.headers("username")).getHash()))
 			{
-				return uService.findUserByEmail(req.params("username"));
+				return uService.findUserByEmail(req.headers("username"));
 			}
 			else
 			{
@@ -52,19 +52,19 @@ public class Controller {
 
 		put("/register", (req, res) -> {
 
-			uService.createUser(req.params("username"), req.params("hash"), req.params("handle"));
-			return uService.findUserByEmail(req.params("username"));
+			uService.createUser(req.headers("username"), req.headers("hash"), req.headers("handle"));
+			return uService.findUserByEmail(req.headers("username"));
 
 		}, json());
 
 		get("/:username", (req, res) -> {
-			return cService.findChirpsByEmail(req.params(":username"));
+			return cService.findChirpsByEmail(req.headers(":username"));
 		}, json());
 
 		post("/:username/follow", (req, res) -> {
 			User u;
-			u = uService.findUserByEmail(req.params("username"));
-			u.addFollowing(req.params(":username"));
+			u = uService.findUserByEmail(req.headers("username"));
+			u.addFollowing(req.headers(":username"));
 			return true;
 		}, json());
 
