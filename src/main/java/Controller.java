@@ -2,6 +2,7 @@ import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.Spark.put;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -70,6 +71,17 @@ public class Controller {
 
 		get("/users", (req, res) -> {
 			return uService.getUsers();
+		}, json());
+		
+		put("/createChirp", (req, res) -> {
+			cService.createChirp(new Chirp(req.headers("username"), req.headers("message")));
+			return true;
+		}, json());
+		
+		post("/deleteChirp", (req, res) -> {
+			Chirp c = cService.findChirpByEmailAndDate(req.headers("creator"), new Date(Long.parseLong(req.headers("date"))));
+			cService.deleteChirp(c);
+			return true;
 		}, json());
 
 	}
