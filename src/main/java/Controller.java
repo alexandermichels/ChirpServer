@@ -64,6 +64,7 @@ public class Controller {
 			try
 			{
 				uService.createUser(req.attribute("username"), req.attribute("hash"), req.attribute("handle"));
+				USER_EMAIL = req.attribute("username");
 				return uService.findUserByEmail(USER_EMAIL);
 			}
 			catch (Exception e)

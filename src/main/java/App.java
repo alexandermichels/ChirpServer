@@ -11,7 +11,7 @@ public class App {
 	
 	
     public static void main(String[] args) throws DuplicateEmailException, StorageException {
-    		port(5010);
+    		port(5000);
     		BasicConfigurator.configure();
     		after((req,res) -> res.type("application/json"));
     		AmazonDBUserStorage userStorage = new AmazonDBUserStorage();
