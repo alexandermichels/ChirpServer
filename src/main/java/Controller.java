@@ -18,33 +18,28 @@ public class Controller {
 	// POST -> update
 	// DELETE -> delete
 	private static String USER_EMAIL;
-	
+
 	public Controller(final UserService uService, final ChirpService cService) {
 		get("/", (req, res) -> {
-	        ArrayList<String> following = uService.findUserByEmail(USER_EMAIL).getFollowing();
-	        ArrayList<Chirp> timeline = new ArrayList<Chirp>();
-	        for (String s : following)
-	        {
-	        	for (Chirp t : cService.findChirpsByEmail(s))
-	        	{
-	        		timeline.add(t);
-	        	}
-	        	String handle = uService.findUserByEmail(USER_EMAIL).getHandle();
-	        	timeline.addAll(cService.findChirpsWithMentions(handle));
-	        }
-	        return timeline;
+			ArrayList<String> following = uService.findUserByEmail(USER_EMAIL).getFollowing();
+			ArrayList<Chirp> timeline = new ArrayList<Chirp>();
+			for (String s : following)
+			{
+				for (Chirp t : cService.findChirpsByEmail(s))
+				{
+					timeline.add(t);
+				}
+				String handle = uService.findUserByEmail(USER_EMAIL).getHandle();
+				timeline.addAll(cService.findChirpsWithMentions(handle));
+			}
+			return timeline;
 		}, json());
-		
+
 		get("/login", (req, res) -> {
-			try
-			{
-				USER_EMAIL = req.params("username");
-			}
-			catch (Exception e)
-			{
-				return null;
-			}
-			
+
+			USER_EMAIL = req.params("username");
+
+
 			if (req.params("authenticated").equals("true"))
 			{
 				return uService.findUserByEmail(USER_EMAIL);
@@ -55,47 +50,34 @@ public class Controller {
 			}
 			else
 			{
-				return null;
+				throw new UserAppException("You don't have the correct credentials");
 			}
-			
+
 		}, json());
-		
+
 		put("/register", (req, res) -> {
-			try
-			{
-				uService.createUser(req.params("username"), req.params("hash"), req.params("handle"));
-				USER_EMAIL = req.params("username");
-				return uService.findUserByEmail(USER_EMAIL);
-			}
-			catch (Exception e)
-			{
-				return null;
-			}
-			
+
+			USER_EMAIL = req.params("username");
+			uService.createUser(req.params("username"), req.params("hash"), req.params("handle"));
+			return uService.findUserByEmail(USER_EMAIL);
+
 		}, json());
-		
+
 		get("/:username", (req, res) -> {
 			return cService.findChirpsByEmail(req.params(":username"));
 		}, json());
-		
+
 		post("/:username/follow", (req, res) -> {
 			User u;
-			try
-			{
-				 u = uService.findUserByEmail(USER_EMAIL);
-			}
-			catch(Exception e)
-			{
-				return false;
-			}
+			u = uService.findUserByEmail(USER_EMAIL);
 			u.addFollowing(req.params(":username"));
 			return true;
 		}, json());
-		
+
 		get("/users", (req, res) -> {
 			return uService.getUsers();
 		}, json());
-		
+
 	}
 
 	private static String toJson(Object object) {
