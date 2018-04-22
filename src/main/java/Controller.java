@@ -17,11 +17,10 @@ public class Controller {
 	// PUT -> create
 	// POST -> update
 	// DELETE -> delete
-	private static String USER_EMAIL;
 
 	public Controller(final UserService uService, final ChirpService cService) {
 		get("/", (req, res) -> {
-			ArrayList<String> following = uService.findUserByEmail(USER_EMAIL).getFollowing();
+			ArrayList<String> following = uService.findUserByEmail(req.params("username")).getFollowing();
 			ArrayList<Chirp> timeline = new ArrayList<Chirp>();
 			for (String s : following)
 			{
@@ -29,24 +28,20 @@ public class Controller {
 				{
 					timeline.add(t);
 				}
-				String handle = uService.findUserByEmail(USER_EMAIL).getHandle();
+				String handle = uService.findUserByEmail(req.params("username")).getHandle();
 				timeline.addAll(cService.findChirpsWithMentions(handle));
 			}
 			return timeline;
 		}, json());
 
 		get("/login", (req, res) -> {
-
-			USER_EMAIL = req.params("username");
-
-
 			if (req.params("authenticated").equals("true"))
 			{
-				return uService.findUserByEmail(USER_EMAIL);
+				return uService.findUserByEmail(req.params("username"));
 			}
 			else if (req.params("hash").equals(uService.findUserByEmail(req.params("username")).getHash()))
 			{
-				return uService.findUserByEmail(USER_EMAIL);
+				return uService.findUserByEmail(req.params("username"));
 			}
 			else
 			{
@@ -57,9 +52,8 @@ public class Controller {
 
 		put("/register", (req, res) -> {
 
-			USER_EMAIL = req.params("username");
 			uService.createUser(req.params("username"), req.params("hash"), req.params("handle"));
-			return uService.findUserByEmail(USER_EMAIL);
+			return uService.findUserByEmail(req.params("username"));
 
 		}, json());
 
@@ -69,7 +63,7 @@ public class Controller {
 
 		post("/:username/follow", (req, res) -> {
 			User u;
-			u = uService.findUserByEmail(USER_EMAIL);
+			u = uService.findUserByEmail(req.params("username"));
 			u.addFollowing(req.params(":username"));
 			return true;
 		}, json());
