@@ -58,18 +58,18 @@ public class Controller {
 
 		}, json());
 
-		get("/:username", (req, res) -> {
+		get("/users/:username", (req, res) -> {
 			return cService.findChirpsByEmail(req.headers(":username"));
 		}, json());
 
-		post("/:username/follow", (req, res) -> {
+		post("/users/:username/follow", (req, res) -> {
 			User u;
 			u = uService.findUserByEmail(req.headers("username"));
 			u.addFollowing(req.headers(":username"));
 			return true;
 		}, json());
 		
-		post("/:username/unfollow", (req, res) -> {
+		post("/users/:username/unfollow", (req, res) -> {
 			User u;
 			u = uService.findUserByEmail(req.headers("username"));
 			u.getFollowing().remove(req.headers(":username"));
