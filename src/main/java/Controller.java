@@ -21,8 +21,10 @@ public class Controller {
 
 	public Controller(final UserService uService, final ChirpService cService) {
 		get("/", (req, res) -> {
-			ArrayList<String> following = uService.findUserByEmail(req.headers("username")).getFollowing();
+			User u = uService.findUserByEmail(req.headers("username"));
+			ArrayList<String> following = u.getFollowing();
 			ArrayList<Chirp> timeline = new ArrayList<Chirp>();
+			timeline.addAll(cService.findChirpsByEmail(u.getEmail()));
 			for (String s : following)
 			{
 				for (Chirp t : cService.findChirpsByEmail(s))
@@ -69,6 +71,11 @@ public class Controller {
 			return true;
 		}, json());
 		
+		get("/users/:username/following", (req, res) -> {
+			User u = uService.findUserByEmail(req.headers(":username"));
+			return u.getFollowing();
+		}, json());
+		
 		post("/users/:username/unfollow", (req, res) -> {
 			User u;
 			u = uService.findUserByEmail(req.headers("username"));
@@ -81,7 +88,7 @@ public class Controller {
 		}, json());
 		
 		put("/createChirp", (req, res) -> {
-			cService.createChirp(new Chirp(req.headers("username"), req.headers("message")));
+			cService.createChirp(new Chirp(req.headers("username"), req.headers("message"), new Gson().fromJson(req.headers("image"), byte[].class)));
 			return true;
 		}, json());
 		

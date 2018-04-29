@@ -41,7 +41,7 @@ public class ServerTests
 	@Test
 	public void chirpTest1()
 	{
-		Chirp c = new Chirp("test@example.com", "Chirping is fun");
+		Chirp c = new Chirp("test@example.com", "Chirping is fun", null);
 		assert(c.getCreator().equals("test@example.com"));
 		assert(c.getMessage().equals("Chirping is fun"));
 		assert(c.getID().equals(c.getCreator()+c.getTime().getTime()));
@@ -124,7 +124,7 @@ public class ServerTests
 	public void chirpServiceInMemoryCreateChirp()
 	{
 		ChirpServiceImpl serv = new ChirpServiceImpl(new InMemoryChirpStorage());
-		serv.createChirp(new Chirp("test@example.com", "test"));
+		serv.createChirp(new Chirp("test@example.com", "test", null));
 	}
 	
 	@Test
@@ -141,7 +141,7 @@ public class ServerTests
 		InMemoryChirpStorage stor = new InMemoryChirpStorage();
 		SampleData.addChirps(stor);
 		ChirpServiceImpl serv = new ChirpServiceImpl(stor);
-		serv.deleteChirp(new Chirp("test10@example", "I know you can't find this one"));
+		serv.deleteChirp(new Chirp("test10@example", "I know you can't find this one", null));
 	}
 	
 	@Test(expected = ChirpNotFoundException.class)
@@ -150,7 +150,7 @@ public class ServerTests
 		InMemoryChirpStorage stor = new InMemoryChirpStorage();
 		SampleData.addChirps(stor);
 		ChirpServiceImpl serv = new ChirpServiceImpl(stor);
-		serv.deleteChirp(new Chirp("test2@example", "I know you can't find this one"));
+		serv.deleteChirp(new Chirp("test2@example", "I know you can't find this one", null));
 	}
 	
 	@Test
@@ -296,7 +296,7 @@ public class ServerTests
 	{
 		BasicConfigurator.configure();
 		ChirpServiceImpl serv = new ChirpServiceImpl(new AmazonDBChirpStorage());
-		serv.createChirp(new Chirp("test@example.com", "test chirp"));
+		serv.createChirp(new Chirp("test@example.com", "test chirp", null));
 	}
 	
 	@Test
@@ -304,7 +304,7 @@ public class ServerTests
 	{
 		BasicConfigurator.configure();
 		ChirpServiceImpl serv = new ChirpServiceImpl(new AmazonDBChirpStorage());
-		Chirp c = new Chirp("test@example.com", "test chirp");
+		Chirp c = new Chirp("test@example.com", "test chirp", null);
 		serv.createChirp(c);
 		Chirp d = serv.findChirpByEmailAndDate(c.getCreator(), c.getTime());
 		assert(c.getCreator().equals(d.getCreator()));

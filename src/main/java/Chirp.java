@@ -2,17 +2,20 @@ import java.util.Date;
 
 import com.amazonaws.services.dynamodbv2.document.Item;
 
+
 public class Chirp 
 {
 	private String creatorEmail;
 	private Date time;
 	private String message;
+	private byte [] image;
 	
-	public Chirp(String email, String m)
+	public Chirp(String email, String m, byte [] image)
 	{
 		this.creatorEmail = email;
 		this.time = new Date();
 		this.message = m;
+		this.image = image;
 	}
 	
 	public String getCreator()
@@ -35,6 +38,9 @@ public class Chirp
 		return message;
 	}
 	
+
+	public byte [] getImage() { return image; }
+	
 	public String getID()
 	{
 		return (String)(this.getCreator()+this.getTime().getTime());
@@ -42,7 +48,7 @@ public class Chirp
 	
 	public static Chirp fromItem(Item item)
 	{
-		Chirp c = new Chirp(item.getString("creator"),item.getString("message"));
+		Chirp c = new Chirp(item.getString("creator"), item.getString("message"), item.getBinary("image"));
 		c.setTime(item.getLong("date"));
 		return c;
 	}
@@ -50,7 +56,7 @@ public class Chirp
 	public Item toItem()
 	{
 		Item i = new Item();
-		i.withPrimaryKey("chirpID",this.getID()).withString("creator", this.getCreator()).withString("message", this.getMessage()).withLong("date", this.getTime().getTime());
+		i.withPrimaryKey("chirpID",this.getID()).withString("creator", this.getCreator()).withString("message", this.getMessage()).withLong("date", this.getTime().getTime()).withBinarySet("image", image);
 		return i;
 	}
 }
