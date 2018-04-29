@@ -48,7 +48,15 @@ public class Chirp
 	
 	public static Chirp fromItem(Item item)
 	{
-		Chirp c = new Chirp(item.getString("creator"), item.getString("message"), item.getBinary("image"));
+		Chirp c;
+		try
+		{
+			c = new Chirp(item.getString("creator"), item.getString("message"), item.getBinary("image"));
+		}
+		catch (Exception e)
+		{
+			c = new Chirp(item.getString("creator"), item.getString("message"), null);
+		}
 		c.setTime(item.getLong("date"));
 		return c;
 	}
@@ -56,7 +64,14 @@ public class Chirp
 	public Item toItem()
 	{
 		Item i = new Item();
-		i.withPrimaryKey("chirpID",this.getID()).withString("creator", this.getCreator()).withString("message", this.getMessage()).withLong("date", this.getTime().getTime()).withBinarySet("image", image);
+		if (image != null)
+		{
+			i.withPrimaryKey("chirpID",this.getID()).withString("creator", this.getCreator()).withString("message", this.getMessage()).withLong("date", this.getTime().getTime()).withBinary("image", image);
+		}
+			else
+		{
+			i.withPrimaryKey("chirpID",this.getID()).withString("creator", this.getCreator()).withString("message", this.getMessage()).withLong("date", this.getTime().getTime());
+		}
 		return i;
 	}
 }
