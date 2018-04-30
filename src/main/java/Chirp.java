@@ -64,11 +64,11 @@ public class Chirp
 	public Item toItem()
 	{
 		Item i = new Item();
-		if (image != null)
+		if (this.getImage() != null)
 		{
 			i.withPrimaryKey("chirpID",this.getID()).withString("creator", this.getCreator()).withString("message", this.getMessage()).withLong("date", this.getTime().getTime()).withBinary("image", image);
 		}
-			else
+		else
 		{
 			i.withPrimaryKey("chirpID",this.getID()).withString("creator", this.getCreator()).withString("message", this.getMessage()).withLong("date", this.getTime().getTime());
 		}

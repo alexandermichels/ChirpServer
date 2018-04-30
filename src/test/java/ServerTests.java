@@ -340,6 +340,16 @@ public class ServerTests
 		}
 	}
 	
+	@Test
+	public void chirpAnImage()
+	{
+		byte[] image = new byte[100];
+		for (int i = 0; i < 100; i++)
+		{
+			
+		}
+	}
+	
 	@After
 	public void cleanUpAmazonDBSampleChirps() throws ChirpNotFoundException
 	{
@@ -354,4 +364,6 @@ public class ServerTests
 			}
 		}
 	}
+	
+	
 }

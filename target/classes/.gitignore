@@ -1,14 +1,3 @@
-/AmazonDBChirpStorage.class
-/AmazonDBUserStorage.class
-/App.class
-/Chirp.class
-/ChirpNotFoundException.class
-/ChirpService.class
-/ChirpServiceImpl.class
-/ChirpStorage.class
-/Controller.class
-/DuplicateEmailException.class
-/DynamoDBConnector.class
 /InMemoryChirpStorage.class
 /InMemoryUserStorage.class
 /SampleData.class

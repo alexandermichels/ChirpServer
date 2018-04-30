@@ -13,13 +13,14 @@ public class User
 	// Gson wants a default constructor
 	public User() 
 	{
-
+		following = new ArrayList<String>();
 	}
 	
 	public User(String email, String shaHash, String handle) {
 		this.email = email;
 		this.hash = shaHash;
 		this.handle = handle;
+		this.following = new ArrayList<String>();
 	}
 	
 	@Override
@@ -61,16 +62,7 @@ public class User
 	
 	public void addFollowing(String f)
 	{
-		if (getFollowing() != null)
-		{
-			getFollowing().add(f);
-		}
-		else
-		{
-			ArrayList<String> a = new ArrayList<String>();
-			a.add(f);
-			setFollowing(a);
-		}
+		getFollowing().add(f);
 	}
 	
 	public static User fromItem(Item item)
@@ -83,14 +75,7 @@ public class User
 	public Item toItem()
 	{
 		Item i = new Item();
-		if (following != null)
-		{
-			i.withPrimaryKey("email", this.getEmail()).withString("hash", this.getHash()).withString("handle", this.getHandle()).withList("following", this.getFollowing());
-		}
-		else
-		{
-			i.withPrimaryKey("email", this.getEmail()).withString("hash", this.getHash()).withString("handle", this.getHandle()).withList("following", new ArrayList<String>());
-		}
+		i.withPrimaryKey("email", this.getEmail()).withString("hash", this.getHash()).withString("handle", this.getHandle()).withList("following", this.getFollowing());
 		return i;
 	}
 	

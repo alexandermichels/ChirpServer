@@ -73,7 +73,7 @@ public class Controller {
 		
 		get("/users/:username/following", (req, res) -> {
 			User u = uService.findUserByEmail(req.headers(":username"));
-			return u.getFollowing();
+			return (String [])u.getFollowing().toArray();
 		}, json());
 		
 		post("/users/:username/unfollow", (req, res) -> {
@@ -88,7 +88,7 @@ public class Controller {
 		}, json());
 		
 		put("/createChirp", (req, res) -> {
-			cService.createChirp(new Chirp(req.headers("username"), req.headers("message"), new Gson().fromJson(req.headers("image"), byte[].class)));
+			cService.createChirp(new Chirp(req.params("creator"), req.params("message"), req.params("image").getBytes()));
 			return true;
 		}, json());
 		
