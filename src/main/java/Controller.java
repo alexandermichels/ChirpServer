@@ -88,7 +88,14 @@ public class Controller {
 		}, json());
 		
 		put("/createChirp", (req, res) -> {
-			cService.createChirp(new Chirp(req.params("creator"), req.params("message"), req.params("image").getBytes()));
+			if (req.params("image") != null)
+			{
+				cService.createChirp(new Chirp(req.params("creator"), req.params("message"), req.params("image").getBytes()));
+			}
+			else
+			{
+				cService.createChirp(new Chirp(req.params("creator"), req.params("message"), null));
+			}
 			return true;
 		}, json());
 		
